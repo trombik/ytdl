@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+task default: [:test]
+
 desc "Run tests"
 task test: [:rspec, :rubocop]
 
