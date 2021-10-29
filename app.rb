@@ -16,6 +16,17 @@ end
 
 enable :sessions
 
+helpers do
+  def valid_url?(string)
+    uri = URI.parse(string)
+    raise unless uri.scheme.match(/^https?$/)
+
+    true
+  rescue StandardError
+    false
+  end
+end
+
 get "/" do
   @message = session.delete(:message)
   @alert_message = session.delete(:alert_message)
@@ -24,10 +35,10 @@ end
 
 post "/" do
   session[:url] = params[:url]
-  if session[:url].empty?
-    session[:alert_message] = "Empty URL"
-  else
+  if valid_url?(session[:url])
     session[:message] = "Queued #{session[:url]}"
+  else
+    session[:alert_message] = "Invalid URL"
   end
   redirect "/"
 end

@@ -43,6 +43,35 @@ describe "Server Service" do
     end
   end
 
+  context "when invalid URL is given" do
+    invalids = %w[
+      foo/bar/buz
+      ftp://foo.exmple.org
+      file:///etc/hosts
+    ]
+    invalids.each do |i|
+      it "shows warning" do
+        post "/", { url: i }
+        follow_redirect!
+        expect(last_response.body).to have_tag(:div, with: { class: %w[alert alert-warning] })
+      end
+    end
+  end
+
+  context "when valid URL is given" do
+    valids = %w[
+      http://foo.example.org
+      https://foo.example.org
+    ]
+    valids.each do |i|
+      it "shows warning" do
+        post "/", { url: i }
+        follow_redirect!
+        expect(last_response.body).not_to have_tag(:div, with: { class: %w[alert alert-warning] })
+      end
+    end
+  end
+
   it "loads the queue page" do
     get "/queues"
     expect(last_response).to be_ok
