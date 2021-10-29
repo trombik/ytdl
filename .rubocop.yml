@@ -25,6 +25,8 @@ Style/SymbolArray:
 Metrics/BlockLength:
   Exclude:
     - Guardfile
+  IgnoredMethods:
+    - describe
 
 Layout/LineLength:
   Exclude:
