@@ -1,4 +1,4 @@
-
+# `ytdl`
 
 ## Development
 
@@ -19,3 +19,10 @@ bundle exec foreman start
 ```console
 bundle exec rake test
 ```
+
+## Writing tests
+
+See:
+
+* [rspec-html-matchers](https://github.com/kucaahbe/rspec-html-matchers)
+* [rack-test](https://github.com/rack/rack-test)
