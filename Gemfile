@@ -9,7 +9,7 @@ gem "guard"
 gem "guard-rspec"
 gem "rack-test"
 gem "rake"
-gem "rb-kqueue" if RbConfig::CONFIG["target_os"] =~ /(?i-mx:bsd|dragonfly)/
+gem "rb-kqueue"
 gem "rspec"
 gem "rubocop"
 gem "rubocop-rake"
