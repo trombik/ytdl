@@ -39,7 +39,7 @@ describe "Server Service" do
     it "shows warning" do
       post "/", { url: "" }
       follow_redirect!
-      expect(last_response.body).to have_tag(:div, with: {:class => %w[alert alert-warning]})
+      expect(last_response.body).to have_tag(:div, with: { class: %w[alert alert-warning] })
     end
   end
 
