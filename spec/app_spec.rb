@@ -64,7 +64,7 @@ describe "Server Service" do
       https://foo.example.org
     ]
     valids.each do |i|
-      it "shows warning" do
+      it "does not shows warning" do
         post "/", { url: i }
         follow_redirect!
         expect(last_response.body).not_to have_tag(:div, with: { class: %w[alert alert-warning] })
