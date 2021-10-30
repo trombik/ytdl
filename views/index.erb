@@ -13,7 +13,7 @@
       </div>
       <div class="form-check">
         <input class="form-check-input" type="checkbox" value="" id="extract-audio" name="extract-audio" checked>
-        <label class="form-check-label" for="extract-audio">
+        <label class="form-check-label" for="extract-audio" data-toggle="tooltip" title="Extract audio from the video. The file will contain audio only.">
           Extract audio
         </label>
       </div>
@@ -27,6 +27,13 @@
                  name="audio-format"
                  id="audio-format-<%= f %>"
                  value="<%= f %>"
+                 data-toggle="tooltip"
+                 title="<%= case f
+                            when "best"
+                              "The audio is extracted as-is. No conversion."
+                            else
+                              "#{f} format"
+                            end %>"
                  <% if f == "best" %>checked<% end %>
           >
           <label class="form-check-label" for="audio-format-<%= f %>"><%= f %></label>
