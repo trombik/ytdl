@@ -6,6 +6,8 @@ require "sinatra"
 require "sinatra/reloader"
 require "erubis"
 
+require_relative "helpers"
+
 set :erb, escape_html: true
 
 configure do
@@ -17,33 +19,28 @@ end
 enable :sessions
 
 helpers do
-  def valid_url?(string)
-    uri = URI.parse(string)
-    raise unless uri.scheme.match(/^https?$/)
-
-    true
-  rescue StandardError
-    false
-  end
+  include Helpers
 end
 
 get "/" do
   @message = session.delete(:message)
   @alert_message = session.delete(:alert_message)
+  @audio_formats = valid_audio_formats
   erb :index
 end
 
 post "/" do
-  session[:url] = params[:url]
-  if valid_url?(session[:url])
+  # logger.info params
+  if valid_params?(params)
     session[:message] = "Queued #{session[:url]}"
+    async_download(build_arg(params))
+
   else
-    session[:alert_message] = "Invalid URL"
+    session[:alert_message] = "Invalid parameters"
   end
   redirect "/"
 end
 
-get "/queues/?" do
-  @queues = []
+get "/queues" do
   erb :queues
 end

@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require "resque"
+require "resque/tasks"
+require_relative "app"
+
 task default: [:test]
 
 desc "Run tests"

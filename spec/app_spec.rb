@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "spec_helper"
 require_relative "../app"
-require "rspec"
 require "rack/test"
 require "rspec-html-matchers"
 
@@ -69,6 +69,22 @@ describe "Server Service" do
         follow_redirect!
         expect(last_response.body).not_to have_tag(:div, with: { class: %w[alert alert-warning] })
       end
+    end
+  end
+
+  context "when invalid audio format is given" do
+    it "shows warning" do
+      post "/", { url: "http://foo.example.org", "audio-format" => "foo" }
+      follow_redirect!
+      expect(last_response.body).to have_tag(:div, with: { class: %w[alert alert-warning] })
+    end
+  end
+
+  context "when valid audio format is given" do
+    it "shows warning" do
+      post "/", { url: "http://foo.example.org", "audio-format" => "mp3" }
+      follow_redirect!
+      expect(last_response.body).not_to have_tag(:div, with: { class: %w[alert alert-warning] })
     end
   end
 
