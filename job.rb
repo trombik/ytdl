@@ -15,8 +15,12 @@ class YTDL
 
     def self.download(args)
       cmd = ENV["CI"] ? "echo" : "youtube-dl"
-      Open3.popen2e(cmd, *args) do |_stdin, out, wait_thr|
+      Open3.popen2e(cmd, *args) do |stdin, out, wait_thr|
+        stdin.close
         puts "Waiting for #{wait_thr.pid}"
+        out.each do |line|
+          puts line
+        end
         code = wait_thr.value
         puts "exit status #{code}"
         puts out.read.to_s

@@ -38,6 +38,7 @@ module Helpers
 
     args << "--extract-audio" if params.key?("extract-audio")
     args << "--audio-format" << params["audio-format"] if params.key?("audio-format")
+    args << "--newline"
     args << params["url"]
   end
 
