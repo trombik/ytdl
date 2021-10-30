@@ -1,39 +1,40 @@
-<h1>YTDL</h1>
-<form method="post" action="">
-  <fieldset>
-    <% if @message %>
-      <div class="alert alert-primary" role="alert"><%= @message %></div>
-    <% end %>
-    <% if @alert_message %>
-      <div class="alert alert-warning" role="alert"><%= @alert_message %></div>
-    <% end %>
-    <div class="mb-3">
-      <label for="url" class="form-label">URL</label>
-      <input type="text" id="url" class="form-control" placeholder="http://" name="url">
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="" id="extract-audio" name="extract-audio" checked>
-      <label class="form-check-label" for="extract-audio">
-        Extract audio
-      </label>
-    </div>
-
-    <label for="audio-format" class="form-label">Audio format (when "Extract audio" is enabled)</label>
-    <div id="audio-format">
-      <% @audio_formats.each do |f| %>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input"
-               type="radio"
-               name="audio-format"
-               id="audio-format-<%= f %>"
-               value="<%= f %>"
-               <% if f == "best" %>checked<% end %>
-        >
-        <label class="form-check-label" for="audio-format-<%= f %>"><%= f %></label>
-      </div>
+<div class="container">
+  <form method="post" action="">
+    <fieldset>
+      <% if @message %>
+        <div class="alert alert-primary" role="alert"><%= @message %></div>
       <% end %>
-    </div>
+      <% if @alert_message %>
+        <div class="alert alert-warning" role="alert"><%= @alert_message %></div>
+      <% end %>
+      <div class="mb-3">
+        <label for="url" class="form-label">URL</label>
+        <input type="text" id="url" class="form-control" placeholder="http://" name="url">
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="extract-audio" name="extract-audio" checked>
+        <label class="form-check-label" for="extract-audio">
+          Extract audio
+        </label>
+      </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </fieldset>
-</form>
+      <label for="audio-format" class="form-label">Audio format (when "Extract audio" is enabled)</label>
+      <div id="audio-format">
+        <% @audio_formats.each do |f| %>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input"
+                 type="radio"
+                 name="audio-format"
+                 id="audio-format-<%= f %>"
+                 value="<%= f %>"
+                 <% if f == "best" %>checked<% end %>
+          >
+          <label class="form-check-label" for="audio-format-<%= f %>"><%= f %></label>
+        </div>
+        <% end %>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </fieldset>
+  </form>
+</div>
