@@ -1,11 +1,25 @@
 # `ytdl`
 
+## Requirements
+
+* `redis`
+* `ruby`
+* `bundler`
+
 ## Development
 
 ## Installing gems
 
 ```console
 bundle install
+```
+
+## Installing packages
+
+### FreeBSD
+
+```console
+pkg install redis
 ```
 
 ## Stating the application
