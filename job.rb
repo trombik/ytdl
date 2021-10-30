@@ -18,13 +18,10 @@ class YTDL
       Open3.popen2e(cmd, *args) do |stdin, out, wait_thr|
         stdin.close
         puts "Waiting for #{wait_thr.pid}"
-        out.each do |line|
-          puts line
-        end
-        code = wait_thr.value
+        out.each { |line| puts line }
+        status = wait_thr.value
         puts "exit status #{code}"
-        puts out.read.to_s
-        raise StandardError if code != 0
+        raise StandardError unless status.success?
       end
     end
   end
