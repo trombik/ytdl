@@ -27,6 +27,7 @@ Metrics/BlockLength:
     - Guardfile
   IgnoredMethods:
     - describe
+    - context
 
 Layout/LineLength:
   Exclude:
