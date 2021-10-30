@@ -92,4 +92,11 @@ describe "Server Service" do
     get "/queues"
     expect(last_response).to be_ok
   end
+
+  describe "/status" do
+    it "shows status page" do
+      get "/status"
+      expect(last_response).to be_ok
+    end
+  end
 end

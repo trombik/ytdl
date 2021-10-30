@@ -44,4 +44,20 @@ module Helpers
   def valid_audio_formats
     VALID_AUDIO_FORMATS
   end
+
+  def resque
+    Resque
+  end
+
+  def jobs(queue, start, count)
+    jobs = []
+    resque.peek(queue, start, count).each do |job|
+      jobs << job["args"].first.last
+    end
+    jobs
+  end
+
+  def workers
+    resque.workers
+  end
 end

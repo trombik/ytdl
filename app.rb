@@ -44,3 +44,9 @@ end
 get "/queues" do
   erb :queues
 end
+
+get "/status/?" do
+  @jobs = jobs("download", 0, 10)
+  @workers = workers
+  erb :status
+end

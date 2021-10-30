@@ -1,0 +1,24 @@
+<div class="container">
+  <h2>Waiting Jobs</h2>
+  <% if @jobs.size > 0 %>
+  <ul>
+    <% @jobs.each do |job| %>
+    <li><%= job %>
+    <% end %>
+  </ul>
+  <% else %>
+    None
+  <% end %>
+
+  <h2>Downloading</h2>
+
+  <% if @workers.size > 0 %>
+  <ul>
+    <% @workers.each do |worker| %>
+      <li><% if worker.job %>Downloading <%= worker.job["payload"]["args"].first.last %><% end %></li>
+    <% end %>
+  </ul>
+  <% else %>
+    None
+  <% end %>
+</div>
