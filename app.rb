@@ -51,5 +51,6 @@ end
 get "/status/?" do
   @jobs = jobs("download", 0, 10)
   @workers = workers
+  @resque_failure = resque_failure
   erb :status
 end

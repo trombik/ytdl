@@ -63,4 +63,8 @@ module Helpers
   def workers
     resque.workers
   end
+
+  def resque_failure
+    Resque::Failure
+  end
 end

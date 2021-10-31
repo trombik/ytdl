@@ -25,4 +25,36 @@
   <% else %>
     None
   <% end %>
+
+  <h2>Failed jobs</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Time (local)</th>
+        <th scope="col">URL</th>
+        <th scope="col">Options</th>
+        <th scope="col">Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @resque_failure.all(1, 10).each do |job| %>
+      <tr>
+        <th scope="row"><%= DateTime.parse(job["failed_at"]).strftime("%Y/%m/%d %H:%M") %></td>
+        <% arg = job["payload"]["args"].first %>
+        <td><a href="<%= arg["url"] %>" target="_blank"><%= arg["url"] %></a></td>
+        <td>
+          <% arg.each do |k, v| %>
+            <% next if k == "url" %>
+            <% if v == "" %>
+              <span class="badge rounded-pill bg-secondary"><%= k %></span></h1>
+            <% else %>
+              <span class="badge rounded-pill bg-secondary"><%= k %>:<%= v %></span></h1>
+            <% end %>
+          <% end %>
+        </td>
+        <td><code data-toggle="tooltip" title="<%= job["backtrace"].join("\n") %>"><%= job["error"] %></code></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
