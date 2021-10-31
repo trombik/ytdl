@@ -14,7 +14,7 @@ class YTDL
     end
 
     def self.download(args)
-      cmd = ENV["CI"] ? "echo" : "youtube-dl"
+      cmd = "youtube-dl"
       Open3.popen2e(cmd, *args) do |stdin, out, wait_thr|
         stdin.close
         puts "Waiting for #{wait_thr.pid}"

@@ -32,9 +32,12 @@ end
 post "/" do
   # logger.info params
   if valid_params?(params)
-    session[:message] = "Queued #{session[:url]}"
-    async_download(build_arg(params))
-
+    begin
+      async_download(build_arg(params))
+      session[:message] = "Queued #{session[:url]}"
+    rescue StandardError
+      session[:alert_message] = "Failed to queue #{session[:url]}"
+    end
   else
     session[:alert_message] = "Invalid parameters"
   end

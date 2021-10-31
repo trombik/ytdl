@@ -30,9 +30,5 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
         cache-version: 1
 
-    - name: Install requirements
-      run: |
-        sudo apt-get install redis-server
-
     - name: Run tests
       run: bundle exec rake

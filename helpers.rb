@@ -27,9 +27,11 @@ module Helpers
   end
 
   def async_download(args)
-    return if ENV["CI"]
-
-    Resque.enqueue(YTDL::Job, args)
+    resque.enqueue(YTDL::Job, args)
+  rescue Object => e
+    logger.err "failed to enqueue job: #{args}"
+    logger.err e.backtrace
+    raise e
   end
 
   def build_arg(params)
