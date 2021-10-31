@@ -27,7 +27,7 @@ class YTDL
         puts "Waiting for #{wait_thr.pid}"
         out.each { |line| puts line }
         status = wait_thr.value
-        puts "exit status #{code}"
+        puts "exit status #{status}"
         raise StandardError unless status.success?
       end
     end
