@@ -35,13 +35,13 @@ module Helpers
   end
 
   def build_arg(params)
-    args = []
+    args = {}
     raise ArgumentError unless valid_params?(params)
 
-    args << "--extract-audio" if params.key?("extract-audio")
-    args << "--audio-format" << params["audio-format"] if params.key?("audio-format")
-    args << "--newline"
-    args << params["url"]
+    params.each_key do |k|
+      args[k] = params[k]
+    end
+    args
   end
 
   def valid_audio_formats

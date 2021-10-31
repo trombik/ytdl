@@ -45,16 +45,16 @@ describe "App helpers" do
     context "when url is given" do
       let(:params) { { "url" => "http://foo.example.org" } }
 
-      it "returns url at the end" do
-        expect(helpers.build_arg(params).last).to include(params["url"])
+      it "includes url as key" do
+        expect(helpers.build_arg(params)).to include("url" => params["url"])
       end
 
       context "with extract-audio" do
         it "includes extract-audio" do
           params["extract-audio"] = ""
 
-          expect(helpers.build_arg(params)).to include("--extract-audio")
-          expect(helpers.build_arg(params).last).to include(params["url"])
+          expect(helpers.build_arg(params)).to include("extract-audio" => "")
+          expect(helpers.build_arg(params)).to include("url" => params["url"])
         end
 
         context "and valid audio-format" do
@@ -62,8 +62,8 @@ describe "App helpers" do
             params["expect-audio"] = ""
             params["audio-format"] = "mp3"
 
-            expect(helpers.build_arg(params)).to include("--audio-format", "mp3")
-            expect(helpers.build_arg(params).last).to include(params["url"])
+            expect(helpers.build_arg(params)).to include("audio-format" => "mp3")
+            expect(helpers.build_arg(params)).to include("url" => params["url"])
           end
         end
 
