@@ -55,7 +55,7 @@ module Helpers
   def jobs(queue, start, count)
     jobs = []
     resque.peek(queue, start, count).each do |job|
-      jobs << job["args"].first.last
+      jobs << job
     end
     jobs
   end

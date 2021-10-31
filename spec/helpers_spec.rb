@@ -11,20 +11,6 @@ describe "App helpers" do
   let(:helpers) { TestHelpers.new }
   let(:resque) { double("Rescue") }
 
-  describe "#jobs" do
-    let(:url) { "https://www.youtube.com/watch?v=DpBWUv_91ho" }
-    let(:job) do
-      { "args" => [["--extract-audio", "--audio-format", "best", url]] }
-    end
-
-    it "returns jobs" do
-      allow(resque).to receive(:peek).and_return([job, job])
-      allow(helpers).to receive(:resque).and_return(resque)
-
-      expect(helpers.jobs("download", 0, 10).first).to include(url)
-    end
-  end
-
   describe "#workers" do
     let(:worker) { double("Worker") }
     it "returns workers" do

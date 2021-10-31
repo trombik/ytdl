@@ -15,7 +15,11 @@
   <% if @workers.size > 0 %>
   <ul>
     <% @workers.each do |worker| %>
-      <li><%= worker.to_s %> <% if worker.job.empty? %>Idle<% else %>Downloading <%= worker.job["payload"]["args"]["url"]%><% end %></li>
+      <% if worker.job.empty? %>
+      <li><%= worker.to_s %> Idle</li>
+      <% else %>
+      <li><%= worker.to_s %> Downloading <%= worker.job["payload"]["args"].first["url"] %></li>
+      <% end %>
     <% end %>
   </ul>
   <% else %>
