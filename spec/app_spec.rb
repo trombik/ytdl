@@ -23,6 +23,7 @@ describe "Server Service" do
     # or stub methods. to mock or stub methods, use `@current_app`.
     #
     # for the issue, see:
+    # http://www.philandstuff.com/2012/02/12/surprises-while-testing-sinatra-controllers.html
     # https://stackoverflow.com/questions/46114246/how-do-i-get-the-sinatra-app-instance-thats-being-tested-by-rack-test/46130697#46130697
     #
     # for a solution, see:
