@@ -18,7 +18,9 @@
       <% if worker.job.empty? %>
       <li><%= worker.to_s %> Idle</li>
       <% else %>
-      <li><%= worker.to_s %> Downloading <%= worker.job["payload"]["args"].first["url"] %></li>
+      <% url = worker.job["payload"]["args"].first["url"] %>
+      <% run_at = DateTime.parse(worker.job["run_at"]).new_offset(Time.now.getlocal.zone) %>
+      <li><%= worker.to_s %> Downloading <a href="<%= url %>" target="_blank"><%= url %></a>, started at <%= run_at.strftime("%Y/%m/%d %H:%M") %></li>
       <% end %>
     <% end %>
   </ul>
@@ -39,7 +41,7 @@
     <tbody>
       <% @resque_failure.all(1, 10).each do |job| %>
       <tr>
-        <th scope="row"><%= DateTime.parse(job["failed_at"]).strftime("%Y/%m/%d %H:%M") %></td>
+        <th scope="row"><%= DateTime.parse(job["failed_at"]).new_offset(Time.now.getlocal.zone).strftime("%Y/%m/%d %H:%M") %></td>
         <% arg = job["payload"]["args"].first %>
         <td><a href="<%= arg["url"] %>" target="_blank"><%= arg["url"] %></a></td>
         <td>
