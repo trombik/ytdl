@@ -27,6 +27,10 @@ module Helpers
     Resque
   end
 
+  def resque_worker
+    Resque::Worker
+  end
+
   def jobs(queue, start, count)
     jobs = []
     resque.peek(queue, start, count).each do |job|

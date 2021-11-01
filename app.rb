@@ -4,6 +4,7 @@ require "rubygems"
 require "bundler/setup"
 require "sinatra"
 require "sinatra/reloader"
+require "sinatra/namespace"
 require "erubis"
 
 require_relative "helpers"
@@ -50,4 +51,52 @@ get "/status/?" do
   @workers = workers
   @resque_failure = resque_failure
   erb :status
+end
+
+namespace "/api/v1" do
+  helpers do
+    include Helpers
+  end
+
+  before do
+    content_type "application/json"
+  end
+
+  get "/hello_world" do
+    res = {
+      "hello" => "world"
+    }
+    res.to_json
+  end
+
+  get "/workers" do
+    res = { workers: [] }
+    workers.each do |worker|
+      res[:workers] << {
+        name: worker.to_s,
+        job: worker.job
+      }
+    end
+    res.to_json
+  end
+
+  get "/workers/:id" do |id|
+    worker = resque_worker.find(id)
+    if worker
+      { name: worker.to_s,
+        job: worker.job }.to_json
+    else
+      {}.to_json
+    end
+  end
+
+  get "/jobs" do
+    jobs = jobs("download", 0, 10)
+    { "jobs" => jobs }.to_json
+  end
+
+  get "/failed_jobs" do
+    jobs = resque_failure.all(0, 10)
+    { "failed_jobs" => jobs }.to_json
+  end
 end
