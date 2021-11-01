@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "open3"
+require "uri"
 
 class YTDL
   # A job class to download a file
