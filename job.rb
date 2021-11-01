@@ -16,7 +16,7 @@ class YTDL
     AUDIO_FORMATS = %w[best aac flac mp3 m4a vorbis].freeze
 
     def self.log(str)
-      log str unless ENV["CI"]
+      puts str unless ENV["CI"]
     end
 
     def self.valid_url?(string)
