@@ -198,7 +198,7 @@ describe "Server Service" do
       end
     end
 
-    describe "failed_jobs" do
+    describe "/failed_jobs" do
       let(:failed_job) do
         { "failed_at" => "2021/11/01 13:09:42 +07",
           "payload" => { "class" => "YTDL::Job",
@@ -260,6 +260,65 @@ describe "Server Service" do
 
           get "/api/v1/jobs"
           expect(last_response.body).to include_json({ "jobs" => [] })
+        end
+      end
+    end
+
+    describe "/job" do
+      let(:job) do
+        {
+          "args" => {
+            "url" => "https://www.youtube.com/watch?v=vNZOQiQHBaY",
+            "extract-audio" => "",
+            "audio-format" => "mp3"
+          }
+        }
+      end
+
+      let(:invalid_job) do
+        {
+          "args" => {
+            "extract-audio" => "",
+            "audio-format" => "mp3"
+          }
+        }
+      end
+
+      it "creates a job" do
+        post "/api/v1/job", job
+
+        expect(last_response.body).to include_json(
+          "result" => {
+            "status" => "ok",
+            "message" => "Queued https://www.youtube.com/watch?v=vNZOQiQHBaY"
+          }
+        )
+      end
+
+      context "when submitting a job failed" do
+        it "returns failed result" do
+          allow(@current_app).to receive(:async_download).and_raise(StandardError)
+          post "/api/v1/job", job
+
+          expect(last_response.body).to include_json(
+            "result" => {
+              "status" => "fail",
+              "message" => /Failed to queue/
+            }
+          )
+        end
+      end
+      context "when an invalid job is given" do
+        it "returns failed result" do
+          allow(@current_app).to receive(:async_download).and_raise(StandardError)
+          post "/api/v1/job", invalid_job
+
+          expect(last_response.body).to include_json(
+            "result" => {
+              "status" => "fail",
+              "message" => /Failed to queue/
+            }
+          )
         end
       end
     end
