@@ -4,8 +4,6 @@ require "uri"
 require "resque"
 require_relative "job"
 
-VALID_AUDIO_FORMATS = %w[best aac flac mp3 m4a vorbis].freeze
-
 # Helper methods for App
 module Helpers
   def valid_url?(string)
@@ -18,12 +16,7 @@ module Helpers
   end
 
   def valid_params?(params)
-    raise if params.key?("audio-format") && !valid_audio_formats.include?(params["audio-format"])
-    raise unless valid_url?(params["url"])
-
-    true
-  rescue StandardError
-    false
+    YTDL::Job.validate(params)
   end
 
   def async_download(args)
@@ -35,17 +28,8 @@ module Helpers
   end
 
   def build_arg(params)
-    args = {}
-    raise ArgumentError unless valid_params?(params)
-
-    params.each_key do |k|
-      args[k] = params[k]
-    end
-    args
-  end
-
-  def valid_audio_formats
-    VALID_AUDIO_FORMATS
+    valid_params?(params)
+    params
   end
 
   def resque

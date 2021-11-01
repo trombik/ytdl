@@ -25,21 +25,18 @@ end
 get "/" do
   @message = session.delete(:message)
   @alert_message = session.delete(:alert_message)
-  @audio_formats = valid_audio_formats
+  @audio_formats = YTDL::Job::AUDIO_FORMATS
   erb :index
 end
 
 post "/" do
   # logger.info params
-  if valid_params?(params)
-    begin
-      async_download(build_arg(params))
-      session[:message] = "Queued #{session[:url]}"
-    rescue StandardError
-      session[:alert_message] = "Failed to queue #{session[:url]}"
-    end
-  else
-    session[:alert_message] = "Invalid parameters"
+  begin
+    valid_params?(params)
+    async_download(build_arg(params))
+    session[:message] = "Queued #{session[:url]}"
+  rescue StandardError => e
+    session[:alert_message] = "Failed to queue #{session[:url]}: #{e}"
   end
   redirect "/"
 end

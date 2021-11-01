@@ -55,7 +55,7 @@ describe "Server Service" do
     it "shows warning" do
       post "/", { url: "" }
       follow_redirect!
-      expect(last_response.body).to have_tag(:div, text: /Invalid parameters/, with: { class: %w[alert alert-warning] })
+      expect(last_response.body).to have_tag(:div, text: /Failed to queue/, with: { class: %w[alert alert-warning] })
     end
   end
 

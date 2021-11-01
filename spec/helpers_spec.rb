@@ -45,7 +45,7 @@ describe "App helpers" do
 
         context "and valid audio-format" do
           it "includes audio-format" do
-            params["expect-audio"] = ""
+            params["extract-audio"] = ""
             params["audio-format"] = "mp3"
 
             expect(helpers.build_arg(params)).to include("audio-format" => "mp3")
@@ -55,7 +55,7 @@ describe "App helpers" do
 
         context "and invalid audio-format" do
           it "raises ArgumentError" do
-            params["expect-audio"] = ""
+            params["extract-audio"] = ""
             params["audio-format"] = "exe"
 
             expect { helpers.build_arg(params) }.to raise_error(ArgumentError)
@@ -69,8 +69,8 @@ describe "App helpers" do
     context "when invalid url is given" do
       let(:params) { { "url" => "ftp://foo.example.org" } }
 
-      it "returms false" do
-        expect(helpers.valid_params?(params)).to be false
+      it "throw ArgumentError" do
+        expect { helpers.valid_params?(params) }.to raise_error(ArgumentError)
       end
     end
 
@@ -99,59 +99,9 @@ describe "App helpers" do
           it " returns false" do
             params["extract-audio"] = ""
             params["audio-format"] = "foo"
-            expect(helpers.valid_params?(params)).to be false
+            expect { helpers.valid_params?(params) }.to raise_error(ArgumentError)
           end
         end
-      end
-    end
-  end
-
-  describe "#valid_url?" do
-    context "when url is http" do
-      it "returns true" do
-        expect(helpers.valid_url?("http://foo.example.org")).to be true
-      end
-    end
-
-    context "when url is https" do
-      it "returns true" do
-        expect(helpers.valid_url?("https://foo.example.org")).to be true
-      end
-    end
-
-    context "when url is empty" do
-      it "returns false" do
-        expect(helpers.valid_url?("")).to be false
-      end
-    end
-
-    context "when url is not http" do
-      it "returns false" do
-        expect(helpers.valid_url?("ftp://foo.example.org")).to be false
-      end
-    end
-
-    context "when url is file" do
-      it "returns false" do
-        expect(helpers.valid_url?("file:///etc/hosts")).to be false
-      end
-    end
-
-    context "when url is nil" do
-      it "returns false" do
-        expect(helpers.valid_url?(nil)).to be false
-      end
-    end
-
-    context "when arg is array" do
-      it "returns false" do
-        expect(helpers.valid_url?([1, 2])).to be false
-      end
-    end
-
-    context "when arg is hash" do
-      it "returns false" do
-        expect(helpers.valid_url?({ foo: :bar })).to be false
       end
     end
   end

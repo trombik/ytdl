@@ -7,12 +7,36 @@ class YTDL
   class Job
     @queue = :download
 
-    KNOWN_OPTIONS = %w[
+    VALID_ARGS = %w[
       extract-audio
       audio-format
       url
     ].freeze
-    VALID_AUDIO_FORMATS = %w[best aac flac mp3 m4a vorbis].freeze
+    AUDIO_FORMATS = %w[best aac flac mp3 m4a vorbis].freeze
+
+    def self.valid_url?(string)
+      uri = URI.parse(string)
+      raise unless uri.scheme.match(/^https?$/)
+
+      true
+    rescue StandardError
+      false
+    end
+
+    def self.validate(args)
+      raise ArgumentError, "missing url" unless args.key?("url")
+      raise ArgumentError, "invalid url" unless valid_url?(args["url"])
+
+      args.each_key do |k|
+        raise ArgumentError, "invalid key #{k}" unless VALID_ARGS.include?(k)
+      end
+      if args.key?("audio-format") && !AUDIO_FORMATS.include?(args["audio-format"])
+        raise ArgumentError,
+              "unknown audio-format"
+      end
+
+      true
+    end
 
     def self.perform(args)
       puts "args: #{args}"
@@ -46,13 +70,13 @@ class YTDL
     def self.valid_args?(args)
       raise ArgumentError, "missing url" unless args.key?("url")
 
-      if args.key?("audio-format") && !VALID_AUDIO_FORMATS.include?(args["audio-format"])
+      if args.key?("audio-format") && !AUDIO_FORMATS.include?(args["audio-format"])
         raise ArgumentError,
               "invalid file format"
       end
 
       args.each_key do |k|
-        raise ArgumentError, "unknown option `#{k}`" unless KNOWN_OPTIONS.include?(k)
+        raise ArgumentError, "unknown option `#{k}`" unless VALID_ARGS.include?(k)
       end
     end
 
