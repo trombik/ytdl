@@ -6,15 +6,6 @@ require_relative "job"
 
 # Helper methods for App
 module Helpers
-  def valid_url?(string)
-    uri = URI.parse(string)
-    raise unless uri.scheme.match(/^https?$/)
-
-    true
-  rescue StandardError
-    false
-  end
-
   def valid_params?(params)
     YTDL::Job.validate(params)
   end
