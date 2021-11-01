@@ -15,6 +15,10 @@ class YTDL
     ].freeze
     AUDIO_FORMATS = %w[best aac flac mp3 m4a vorbis].freeze
 
+    def self.log(str)
+      log str unless ENV["CI"]
+    end
+
     def self.valid_url?(string)
       uri = URI.parse(string)
       raise unless uri.scheme.match(/^https?$/)
@@ -40,19 +44,19 @@ class YTDL
     end
 
     def self.perform(args)
-      puts "args: #{args}"
+      log "args: #{args}"
       download(parse_args(args))
-      puts "Finished"
+      log "Finished"
     end
 
     def self.download(args)
       cmd = "youtube-dl"
       Open3.popen2e(cmd, *args) do |stdin, out, wait_thr|
         stdin.close
-        puts "Waiting for #{wait_thr.pid}"
-        out.each { |line| puts line }
+        log "Waiting for #{wait_thr.pid}"
+        out.each { |line| log line }
         status = wait_thr.value
-        puts "exit status #{status}"
+        log "exit status #{status}"
         raise StandardError unless status.success?
       end
     end
