@@ -99,4 +99,21 @@ namespace "/api/v1" do
     jobs = resque_failure.all(0, 10)
     { "failed_jobs" => jobs }.to_json
   end
+
+  post "/job" do
+    result = {
+      status: "fail",
+      message: ""
+    }
+    begin
+      valid_params?(params["args"])
+      async_download(build_arg(params["args"]))
+      result[:message] = "Queued #{params['args']['url']}"
+      result[:status] = "ok"
+    rescue StandardError => e
+      result[:message] = "Failed to queue #{params['args']['url']}: #{e}"
+    end
+    status result[:message] == "ok" ? 200 : 400
+    { result: result }.to_json
+  end
 end
