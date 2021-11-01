@@ -28,6 +28,7 @@ Metrics/BlockLength:
   IgnoredMethods:
     - describe
     - context
+    - namespace
 
 Layout/LineLength:
   Exclude:
