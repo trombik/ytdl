@@ -1,32 +1,56 @@
 <div class="container">
   <h2>Waiting Jobs</h2>
-  <% if @jobs.size > 0 %>
-  <ul>
-    <% @jobs.each do |job| %>
-    <li><%= job %>
-    <% end %>
-  </ul>
-  <% else %>
-    None
-  <% end %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">URL</th>
+        <th scope="col">Options</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @jobs.each do |job| %>
+      <tr>
+        <% args = job["args"].first %>
+        <td><a href="<%= args["url"] %>" target="_blank"><%= args["url"] %></a></td>
+        <td>
+          <% args.each do |k, v| %>
+            <% next if k == "url" %>
+            <% if v == "" %>
+              <span class="badge rounded-pill bg-secondary"><%= k %></span></h1>
+            <% else %>
+              <span class="badge rounded-pill bg-secondary"><%= k %>:<%= v %></span></h1>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
 
   <h2>Workers</h2>
 
-  <% if @workers.size > 0 %>
-  <ul>
-    <% @workers.each do |worker| %>
-      <% if worker.job.empty? %>
-      <li><%= worker.to_s %> Idle</li>
-      <% else %>
-      <% url = worker.job["payload"]["args"].first["url"] %>
-      <% run_at = DateTime.parse(worker.job["run_at"]).new_offset(Time.now.getlocal.zone) %>
-      <li><%= worker.to_s %> Downloading <a href="<%= url %>" target="_blank"><%= url %></a>, started at <%= run_at.strftime("%Y/%m/%d %H:%M") %></li>
-      <% end %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @workers.each do |worker| %>
+      <tr>
+        <td>
+          <span class="badge bg-primary"><%= worker.to_s %></span>
+        </td>
+        <td>
+          <% url = worker.job["payload"]["args"].first["url"] %>
+          <% run_at = DateTime.parse(worker.job["run_at"]).new_offset(Time.now.getlocal.zone) %>
+          Downloading <a href="<%= url %>" target="_blank"><%= url %></a>, started at <%= run_at.strftime("%Y/%m/%d %H:%M") %>
+        </td>
+      </tr>
     <% end %>
-  </ul>
-  <% else %>
-    None
-  <% end %>
+    </tbody>
+  </table>
 
   <h2>Failed jobs</h2>
   <table class="table">
