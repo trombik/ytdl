@@ -2,7 +2,6 @@
 
 require "resque"
 require "resque/tasks"
-require_relative "app"
 
 task default: [:test]
 

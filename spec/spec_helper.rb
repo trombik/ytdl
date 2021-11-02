@@ -3,3 +3,4 @@
 require "rspec"
 
 ENV["CI"] = "y"
+ENV["RACK_ENV"] = "test"

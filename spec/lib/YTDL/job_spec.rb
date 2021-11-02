@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "spec_helper"
-require_relative "../job"
+require_relative "../../spec_helper"
+require_relative "../../../lib/YTDL/job"
 
 describe YTDL::Job do
   let(:c) { YTDL::Job }

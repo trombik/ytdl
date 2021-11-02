@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "spec_helper"
-require_relative "../helpers"
+require_relative "../../spec_helper"
+require_relative "../../../lib/YTDL/helpers"
 
 class TestHelpers
-  include Helpers
+  include YTDL::Helpers
 end
 
 describe "App helpers" do
