@@ -32,10 +32,6 @@ describe "Server Service" do
     # https://gist.github.com/yuanying/7818242#file-sinatra-helper-test-02-rb
     @current_app = app.helpers.dup
     allow(app.helpers).to receive(:dup).and_return(@current_app)
-
-    # mock async_download with `@current_app` because resque is not available
-    # in tests.
-    allow(@current_app).to receive(:async_download).and_return(true)
   end
 
   def app
@@ -114,65 +110,6 @@ describe "Server Service" do
   end
 
   describe "/status" do
-    let(:resque) { double("resque") }
-    let(:resque_failure) { double("resque_failure") }
-
-    # rubocop:disable Metrics/BlockLength
-    let(:failed_jobs) do
-      [
-        { "failed_at" => "2021/10/31 13:19:50 +07",
-          "payload" => { "class" => "YTDL::Job",
-                         "args" => [{ "url" => "https://www.youtube.com/watch?v=m_iSDsx4Uzs",
-                                      "extract_audio" => "", "audio_format" => "mp3" }] },
-          "exception" => "TypeError",
-          "error" => "no implicit conversion of Array into String",
-          "backtrace" =>
-            ["/usr/local/lib/ruby/2.7/open3.rb:213:in `spawn'",
-             "/usr/local/lib/ruby/2.7/open3.rb:213:in `popen_run'",
-             "/usr/local/lib/ruby/2.7/open3.rb:208:in `popen2e'",
-             "/usr/home/trombik/github/trombik/ytdl/job.rb:24:in `download'",
-             "/usr/home/trombik/github/trombik/ytdl/job.rb:18:in `perform'"],
-          "worker" => "t480:82745:*",
-          "queue" => "download" },
-        { "failed_at" => "2021/10/31 13:19:50 +07",
-          "payload" => { "class" => "YTDL::Job",
-                         "args" => [{ "url" => "https://www.youtube.com/watch?v=m_iSDsx4Uzs",
-                                      "extract_audio" => "" }] },
-          "exception" => "TypeError",
-          "error" => "no implicit conversion of Array into String",
-          "backtrace" =>
-            ["/usr/local/lib/ruby/2.7/open3.rb:213:in `spawn'",
-             "/usr/local/lib/ruby/2.7/open3.rb:213:in `popen_run'",
-             "/usr/local/lib/ruby/2.7/open3.rb:208:in `popen2e'",
-             "/usr/home/trombik/github/trombik/ytdl/job.rb:24:in `download'",
-             "/usr/home/trombik/github/trombik/ytdl/job.rb:18:in `perform'"],
-          "worker" => "t480:82745:*",
-          "queue" => "download" },
-        { "failed_at" => "2021/10/31 13:19:50 +07",
-          "payload" => { "class" => "YTDL::Job",
-                         "args" => [{ "url" => "https://www.youtube.com/watch?v=m_iSDsx4Uzs" }] },
-          "exception" => "TypeError",
-          "error" => "no implicit conversion of Array into String",
-          "backtrace" =>
-            ["/usr/local/lib/ruby/2.7/open3.rb:213:in `spawn'",
-             "/usr/local/lib/ruby/2.7/open3.rb:213:in `popen_run'",
-             "/usr/local/lib/ruby/2.7/open3.rb:208:in `popen2e'",
-             "/usr/home/trombik/github/trombik/ytdl/job.rb:24:in `download'",
-             "/usr/home/trombik/github/trombik/ytdl/job.rb:18:in `perform'"],
-          "worker" => "t480:82745:*",
-          "queue" => "download" }
-      ]
-    end
-    # rubocop:enable Metrics/BlockLength
-
-    before(:each) do
-      allow(@current_app).to receive(:resque).and_return(resque)
-      allow(resque).to receive(:workers).and_return([])
-      allow(resque).to receive(:peek).and_return([])
-      allow(@current_app).to receive(:resque_failure).and_return(resque_failure)
-      allow(resque_failure).to receive(:all).and_return(failed_jobs)
-    end
-
     it "shows status page" do
       get "/status"
       expect(last_response).to be_ok
