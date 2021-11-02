@@ -43,9 +43,13 @@
           <span class="badge bg-primary"><%= worker.to_s %></span>
         </td>
         <td>
+          <% if worker.job.empty? %>
+            Idle
+          <% else %>
           <% url = worker.job["payload"]["args"].first["url"] %>
           <% run_at = DateTime.parse(worker.job["run_at"]).new_offset(Time.now.getlocal.zone) %>
           Downloading <a href="<%= url %>" target="_blank"><%= url %></a>, started at <%= run_at.strftime("%Y/%m/%d %H:%M") %>
+          <% end %>
         </td>
       </tr>
     <% end %>
