@@ -22,6 +22,7 @@ task :rspec do
   redis_arg += "--logfile /dev/null "
   redis_arg += "--dbfilename #{ENV['YTDL_REDIS_DB_FILE'].shellescape}"
   redis_pid = spawn("redis-server #{redis_arg}")
+  sleep 5
 
   Resque.redis = "#{ENV['YTDL_REDIS_ADDRESS']}:#{ENV['YTDL_REDIS_PORT']}"
   Resque.redis.redis.flushall
