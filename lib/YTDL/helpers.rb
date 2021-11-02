@@ -14,8 +14,8 @@ class YTDL
     def async_download(args)
       resque.enqueue(YTDL::Job, args)
     rescue Object => e
-      logger.err "failed to enqueue job: #{args}"
-      logger.err e.backtrace
+      logger.error "failed to enqueue job: #{args}"
+      logger.error e.backtrace
       raise e
     end
 
