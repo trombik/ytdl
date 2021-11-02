@@ -45,13 +45,14 @@ class YTDL
 
     def self.perform(args)
       return fake_download if ENV["CI"]
+
       log "args: #{args}"
       download(parse_args(args))
       log "Finished"
     end
 
     def self.fake_download
-      sleep rand(3) + 3
+      sleep rand(3..5)
     end
 
     def self.download(args)

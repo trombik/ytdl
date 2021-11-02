@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require_relative "spec_helper"
-require_relative "../app"
+require_relative "../../spec_helper"
+require_relative "../../../lib/YTDL/app"
 require "rack/test"
 require "rspec-html-matchers"
 require "rspec/json_expectations"
 
-set :environment, :test
+# set :environment, :test
 
 RSpec::Matchers.define(:redirect_to) do |path|
   match do |response|
@@ -39,7 +39,8 @@ describe "Server Service" do
   end
 
   def app
-    @app ||= Sinatra::Application.new
+    # @app ||= Sinatra::Application.new
+    @app ||= YTDL::App.new
   end
 
   it "loads the home page" do
@@ -50,6 +51,8 @@ describe "Server Service" do
   it "accepts a URL" do
     post "/", { url: "http://foo.example.com" }
     expect(last_response).to redirect_to "/"
+    follow_redirect!
+    expect(last_response.body).to have_tag(:div, text: /Queued/, with: { class: %w[alert alert-primary] })
   end
 
   context "when empty URL is given" do
