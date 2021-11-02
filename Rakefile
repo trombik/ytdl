@@ -23,6 +23,9 @@ task :rspec do
   redis_arg += "--dbfilename #{ENV['YTDL_REDIS_DB_FILE'].shellescape}"
   redis_pid = spawn("redis-server #{redis_arg}")
 
+  Resque.redis = "#{ENV['YTDL_REDIS_ADDRESS']}:#{ENV['YTDL_REDIS_PORT']}"
+  Resque.redis.redis.flushall
+
   thr = Thread.new do
     ENV["QUEUE"] = "download"
     ENV["CI"] = "y"
@@ -34,6 +37,7 @@ task :rspec do
 
   sh "bundle exec rspec"
 
+  Resque.redis.redis.flushall
   Thread.kill(thr)
   Process.kill("TERM", redis_pid)
   Process.wait redis_pid
