@@ -8,6 +8,7 @@ require "sinatra/namespace"
 require "erubis"
 
 require_relative "helpers"
+require_relative "job"
 
 class YTDL
   # The application
@@ -18,6 +19,12 @@ class YTDL
         puts "reloaded"
       end
     end
+    configure do
+      host = ENV["YTDL_REDIS_ADDRESS"] || "127.0.0.1"
+      port = ENV["YTDL_REDIS_PORT"] || 6379
+      Resque.redis = "#{host}:#{port}"
+    end
+
     register Sinatra::Namespace
 
     set :port, 5000
@@ -69,9 +76,7 @@ class YTDL
       end
 
       get "/hello_world" do
-        res = {
-          "hello" => "world"
-        }
+        res = { "hello" => "world" }
         res.to_json
       end
 
