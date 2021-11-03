@@ -9,6 +9,7 @@ require "erubis"
 
 require_relative "helpers"
 require_relative "job"
+require_relative "config_loader"
 
 class YTDL
   # The application
@@ -20,9 +21,8 @@ class YTDL
       end
     end
     configure do
-      host = ENV["YTDL_REDIS_ADDRESS"] || "127.0.0.1"
-      port = ENV["YTDL_REDIS_PORT"] || 6379
-      Resque.redis = "#{host}:#{port}"
+      config = YTDL::ConfigLoader.new.load_file("#{File.dirname(__FILE__)}/../../config/YTDL.yml")
+      Resque.redis = "#{config['redis_address']}:#{config['redis_port']}"
     end
 
     register Sinatra::Namespace
