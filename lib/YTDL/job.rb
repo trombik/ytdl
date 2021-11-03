@@ -2,6 +2,7 @@
 
 require "open3"
 require "uri"
+require_relative "./config_loader"
 
 class YTDL
   # A job class to download a file
@@ -57,7 +58,7 @@ class YTDL
 
     def self.download(args)
       cmd = "youtube-dl"
-      Open3.popen2e(cmd, *args) do |stdin, out, wait_thr|
+      Open3.popen2e(cmd, *args, chdir: config["download_dir"]) do |stdin, out, wait_thr|
         stdin.close
         log "Waiting for #{wait_thr.pid}"
         out.each { |line| log line }
