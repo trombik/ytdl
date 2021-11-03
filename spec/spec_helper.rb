@@ -18,7 +18,7 @@ def run_redis
               "--logfile /dev/null " \
               "--dbfilename #{config['redis_dbfilename'].shellescape}"
   redis_pid = spawn("redis-server #{redis_arg}")
-  sleep 5
+  sleep 2
 
   Resque.redis = "#{config['redis_address']}:#{config['redis_port']}"
   Resque.redis.redis.flushall
