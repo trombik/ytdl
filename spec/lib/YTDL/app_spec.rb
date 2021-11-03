@@ -19,6 +19,16 @@ describe "Server Service" do
   include Rack::Test::Methods
   include RSpecHtmlMatchers
 
+  before(:all) do
+    @redis_pid = run_redis
+    @worker_thr = run_worker
+  end
+
+  after(:all) do
+    stop_redis(@redis_pid)
+    stop_worker(@worker_thr)
+  end
+
   before(:each) do
     # make the application instance available in examples so that one can mock
     # or stub methods. to mock or stub methods, use `@current_app`.
