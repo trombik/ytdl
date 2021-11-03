@@ -1,6 +1,4 @@
 ---
-address: 127.0.0.1
-port: <%= 4999 + 1 %>
 redis_address: 127.0.0.1
 redis_port: 6379
 redis_port: <%= case ENV["RACK_ENV"]

@@ -6,11 +6,9 @@ require_relative "../../../lib/YTDL/config_loader"
 describe YTDL::ConfigLoader do
   let(:valid_erb) do
     <<-YAML
-    address: 127.0.0.1
-    port: <%= 4999 + 1 %>
     redis_address: 127.0.0.1
     redis_port: 6379
-    download_dir: /tmp
+    download_dir: <%= "/tmp" %>
     YAML
   end
 
@@ -76,7 +74,7 @@ describe YTDL::ConfigLoader do
   describe "#validate_type" do
     context "When Integer is expected but Srting is given" do
       it "raises ArgumentError" do
-        expect { obj.validate_type({ "port" => "5000" }) }.to raise_error ArgumentError
+        expect { obj.validate_type({ "redis_port" => "5000" }) }.to raise_error ArgumentError
       end
     end
   end
@@ -104,9 +102,9 @@ describe YTDL::ConfigLoader do
   describe "#merge_default" do
     context "When optional key is missing" do
       it "merge DEFAULT_OPTION" do
-        result = obj.merge_default({ "address" => "foo.example.org" })
-        expect(result["address"]).to eq "foo.example.org"
-        expect(result["port"]).to eq 5000
+        result = obj.merge_default({ "redis_address" => "foo.example.org" })
+        expect(result["redis_address"]).to eq "foo.example.org"
+        expect(result["redis_port"]).to eq 6379
       end
     end
   end
@@ -127,8 +125,6 @@ describe YTDL::ConfigLoader do
     it "loads file and returns config" do
       allow(obj).to receive(:read_file).and_return(valid_erb)
       result = obj.load_file("/foo/bar")
-      expect(result).to include("address" => "127.0.0.1")
-      expect(result).to include("port" => 5000)
       expect(result).to include("redis_address" => "127.0.0.1")
       expect(result).to include("redis_port" => 6379)
       expect(result).to include("download_dir" => "/tmp")
