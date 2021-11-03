@@ -118,15 +118,23 @@ class YTDL
       default_option.merge(config)
     end
 
+    def validate_key_has_valid_type_in_env(key)
+      env_key = "YTDL_#{key.upcase}"
+      return unless ENV.key?(env_key)
+
+      if VALID_OPTION[key][:type] == Integer && !ENV[env_key].match(/^\d+$/)
+        raise ArgumentError, format("`%<key>s` in ENV is not Integer: `%<value>s`", key: env_key, value: ENV[env_key])
+      end
+
+      true
+    end
+
     def override_with_env(config)
       config.each_key do |k|
         env_key = "YTDL_#{k.upcase}"
         next unless ENV.key?(env_key)
 
-        unless ENV[env_key].match(/^\d+$/)
-          raise ArgumentError, format("`%<key>s` in ENV is not Integer: `%<value>s`", key: env_key, value: ENV[env_key])
-        end
-
+        validate_key_has_valid_type_in_env(k)
         config[k] = VALID_OPTION[k][:type] == Integer ? ENV[env_key].to_i : ENV[env_key]
       end
       config

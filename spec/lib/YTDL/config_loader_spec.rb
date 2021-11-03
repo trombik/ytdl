@@ -84,9 +84,8 @@ describe YTDL::ConfigLoader do
   describe "#validate" do
     context "when valid config is given" do
       it "does not raise" do
-        result = ""
         expect do
-          obj.validate({"download_dir" => "/tmp"})
+          obj.validate({ "download_dir" => "/tmp" })
         end.not_to raise_error
       end
     end
@@ -172,6 +171,17 @@ describe YTDL::ConfigLoader do
         allow(obj).to receive(:read_file).and_return("download_dir: /tmp")
 
         expect { obj.load_file("/foo/bar") }.to raise_error ArgumentError
+      end
+    end
+
+    context "When redis_address is overriden by YTDL_REDIS_ADDRESS" do
+      before(:each) { ENV["YTDL_REDIS_ADDRESS"] = "127.0.0.1" }
+      after(:each) { ENV.delete("YTDL_REDIS_ADDRESS") }
+
+      it "does not raise" do
+        allow(obj).to receive(:read_file).and_return("download_dir: /tmp")
+
+        expect { obj.load_file("/foo/bar") }.not_to raise_error
       end
     end
   end
