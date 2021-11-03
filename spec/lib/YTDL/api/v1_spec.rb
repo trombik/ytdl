@@ -10,12 +10,10 @@ describe YTDL::API::V1 do
 
   before(:all) do
     @redis_pid = run_redis
-    @worker_thr = run_worker
   end
 
   after(:all) do
     stop_redis(@redis_pid)
-    stop_worker(@worker_thr)
   end
 
   before(:each) do
@@ -25,6 +23,16 @@ describe YTDL::API::V1 do
 
   def app
     @app ||= YTDL::API::V1.new
+  end
+
+  let(:job) do
+    {
+      "args" => {
+        "url" => "https://www.youtube.com/watch?v=vNZOQiQHBaY",
+        "extract-audio" => "",
+        "audio-format" => "mp3"
+      }
+    }
   end
 
   it "loads the home page" do
@@ -57,15 +65,6 @@ describe YTDL::API::V1 do
   end
 
   describe "/job" do
-    let(:job) do
-      {
-        "args" => {
-          "url" => "https://www.youtube.com/watch?v=vNZOQiQHBaY",
-          "extract-audio" => "",
-          "audio-format" => "mp3"
-        }
-      }
-    end
 
     let(:invalid_job) do
       {
@@ -74,18 +73,6 @@ describe YTDL::API::V1 do
           "audio-format" => "mp3"
         }
       }
-    end
-    context "When a job is posted" do
-      it "creates a job" do
-        post "/job", job
-
-        expect(last_response.body).to include_json(
-          "result" => {
-            "status" => "ok",
-            "message" => "Queued https://www.youtube.com/watch?v=vNZOQiQHBaY"
-          }
-        )
-      end
     end
 
     context "when submitting a job failed" do
@@ -101,6 +88,7 @@ describe YTDL::API::V1 do
         )
       end
     end
+
     context "when an invalid job is given" do
       it "returns failed result" do
         allow(@current_app).to receive(:async_download).and_raise(StandardError)
@@ -133,6 +121,29 @@ describe YTDL::API::V1 do
           expect(last_response.body).to include_json({})
         end
       end
+    end
+  end
+
+  context "when a job is posted" do
+    it "accepts a job and show the job in queue" do
+      post "/job", job
+      get "/jobs"
+
+      expect(last_response.body).to include_json(
+        {
+          "jobs" => [
+            {
+              "args" => [
+                {
+                  "url" => job["args"]["url"],
+                  "extract-audio" => "",
+                  "audio-format" => job["args"]["audio-format"]
+                }
+              ]
+            }
+          ]
+        }
+      )
     end
   end
 end
