@@ -16,26 +16,6 @@ require_relative "api/v1"
 class YTDL
   # The application
   class App < YTDL::Base
-    configure :development do
-      register Sinatra::Reloader
-      after_reload do
-        puts "reloaded"
-      end
-    end
-    configure do
-      config = YTDL::ConfigLoader.new.load_file("#{File.dirname(__FILE__)}/../../config/YTDL.yml")
-      Resque.redis = "#{config['redis_address']}:#{config['redis_port']}"
-    end
-
-    register Sinatra::Namespace
-
-    set :sessions, true
-    set :erb, escape_html: true
-    set :static, true
-    set :public_folder, (proc { File.join(root, "static") })
-    set :session_secret,
-        "8f4e0fc3bc2a356718819c28c290529d9bc61fa886a2738bc416b204d6fbef2b7cc"
-
     helpers YTDL::Helpers
 
     get "/" do
