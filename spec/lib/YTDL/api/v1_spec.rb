@@ -65,7 +65,6 @@ describe YTDL::API::V1 do
   end
 
   describe "/job" do
-
     let(:invalid_job) do
       {
         "args" => {
