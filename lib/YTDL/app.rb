@@ -17,6 +17,7 @@ class YTDL
     configure :development do
       register Sinatra::Reloader
       after_reload do
+
         puts "reloaded"
       end
     end
@@ -30,7 +31,8 @@ class YTDL
     set :port, 5000
     set :sessions, true
     set :erb, escape_html: true
-    set public_dir: "assets"
+    set :static, true
+    set :public_folder, Proc.new { File.join(root, "static") }
     set :session_secret,
         "8f4e0fc3bc2a356718819c28c290529d9bc61fa886a2738bc416b204d6fbef2b7cc"
 

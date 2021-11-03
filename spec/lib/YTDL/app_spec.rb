@@ -54,6 +54,10 @@ describe "Server Service" do
     expect(last_response).to be_ok
   end
 
+  it "has favicon" do
+    get "/img/favicon-32x32.png"
+    expect(last_response).to be_ok
+  end
   it "accepts a URL" do
     post "/", { url: "http://foo.example.com" }
     expect(last_response).to redirect_to "/"
