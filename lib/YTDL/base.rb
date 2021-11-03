@@ -16,6 +16,7 @@ class YTDL
   class Base < Sinatra::Base
     configure :development do
       register Sinatra::Reloader
+      also_reload File.join(root, "job.rb")
       after_reload do
         puts "reloaded"
       end
