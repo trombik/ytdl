@@ -68,7 +68,7 @@ class YTDL
           out.each { |line| log line }
           status = wait_thr.value
           log "exit status #{status}"
-          raise StandardError unless status.success?
+          raise StandardError unless status != 0
         end
       end
     end
