@@ -37,10 +37,11 @@ class YTDL
   class ConfigLoader
     VALID_OPTION = {
       "address" => { type: String, default: "127.0.0.1", required: false },
+      "download_dir" => { type: String, required: true },
       "port" => { type: Integer, default: 5000, required: false },
       "redis_address" => { type: String, default: "127.0.0.1", required: false },
-      "redis_port" => { type: Integer, default: 6379, required: false },
-      "download_dir" => { type: String, required: true }
+      "redis_dbfilename" => { type: String, default: "dump.rdb", required: false },
+      "redis_port" => { type: Integer, default: 6379, required: false }
     }.freeze
 
     def initialize; end

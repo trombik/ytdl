@@ -1,23 +1,26 @@
 # frozen_string_literal: true
 
 require "rspec"
+require "shellwords"
 
 ENV["CI"] = "y"
 ENV["RACK_ENV"] = "test"
 
-def run_redis
-  ENV["YTDL_REDIS_ADDRESS"] ||= "127.0.0.1"
-  ENV["YTDL_REDIS_PORT"] ||= "16379"
-  ENV["YTDL_REDIS_DB_FILE"] ||= "test.rdb"
+def load_config
+  require_relative "../lib/YTDL/config_loader"
+  YTDL::ConfigLoader.new.load_file("#{File.dirname(__FILE__)}/../config/YTDL.yml")
+end
 
-  redis_arg = "--bind #{ENV['YTDL_REDIS_ADDRESS'].shellescape} " \
-              "--port #{ENV['YTDL_REDIS_PORT'].shellescape} " \
+def run_redis
+  config = load_config
+  redis_arg = "--bind #{config['redis_address'].shellescape} " \
+              "--port #{config['redis_port'].to_s.shellescape} " \
               "--logfile /dev/null " \
-              "--dbfilename #{ENV['YTDL_REDIS_DB_FILE'].shellescape}"
+              "--dbfilename #{config['redis_dbfilename'].shellescape}"
   redis_pid = spawn("redis-server #{redis_arg}")
   sleep 5
 
-  Resque.redis = "#{ENV['YTDL_REDIS_ADDRESS']}:#{ENV['YTDL_REDIS_PORT']}"
+  Resque.redis = "#{config['redis_address']}:#{config['redis_port']}"
   Resque.redis.redis.flushall
   redis_pid
 end
@@ -29,10 +32,11 @@ def stop_redis(pid)
 end
 
 def run_worker
+  config = load_config
   Thread.new do
     ENV["QUEUE"] = "download"
     ENV["CI"] = "y"
-    Resque.redis = "#{ENV['YTDL_REDIS_ADDRESS']}:#{ENV['YTDL_REDIS_PORT']}"
+    Resque.redis = "#{config['redis_address']}:#{config['redis_port']}"
     worker = Resque::Worker.new
     worker.prepare
     worker.work(5)
