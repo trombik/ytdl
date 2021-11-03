@@ -1,17 +1,6 @@
 # frozen_string_literal: true
 
-require "rubygems"
-require "bundler/setup"
-require "sinatra/base"
-require "sinatra/reloader"
-require "sinatra/namespace"
-require "erubis"
-
-require_relative "helpers"
-require_relative "job"
-require_relative "config_loader"
 require_relative "base"
-require_relative "api/v1"
 
 class YTDL
   # The application
