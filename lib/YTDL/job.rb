@@ -56,15 +56,20 @@ class YTDL
       sleep rand(3..5)
     end
 
+    def self.cmd
+      "youtube-dl"
+    end
+
     def self.download(args)
-      cmd = "youtube-dl"
-      Open3.popen2e(cmd, *args, chdir: config["download_dir"]) do |stdin, out, wait_thr|
-        stdin.close
-        log "Waiting for #{wait_thr.pid}"
-        out.each { |line| log line }
-        status = wait_thr.value
-        log "exit status #{status}"
-        raise StandardError unless status.success?
+      Dir.chdir(config["download_dir"]) do
+        Open3.popen2e(cmd, *args) do |stdin, out, wait_thr|
+          stdin.close
+          log "Waiting for #{wait_thr.pid}"
+          out.each { |line| log line }
+          status = wait_thr.value
+          log "exit status #{status}"
+          raise StandardError unless status.success?
+        end
       end
     end
 
@@ -77,6 +82,8 @@ class YTDL
       end
       @options << "--newline" << args["url"]
       @options.reject! { |i| i == "" }
+      log "command line options: `#{@options.join(' ')}`"
+      @options
     end
 
     def self.valid_args?(args)
@@ -90,6 +97,11 @@ class YTDL
       args.each_key do |k|
         raise ArgumentError, "unknown option `#{k}`" unless VALID_ARGS.include?(k)
       end
+    end
+
+    def self.config
+      @config ||= ConfigLoader.new.load_file("config/YTDL.yml")
+      @config
     end
 
     def initialize; end
