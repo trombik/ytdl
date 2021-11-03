@@ -42,6 +42,13 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
+      <script>
+        $(document).ready(function(){
+          $("#extract-audio").change(function() {
+            $("#audio-format input:radio").attr("disabled", !this.checked);
+          });
+        });
+      </script>
     </fieldset>
   </form>
 </div>
